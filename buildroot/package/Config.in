@@ -479,7 +479,6 @@ endmenu
 	source "package/cpuburn-arm/Config.in"
 	source "package/crucible/Config.in"
 	source "package/cryptsetup/Config.in"
-	source "package/cvi-pinmux/Config.in"
 	source "package/cwiid/Config.in"
 	source "package/dahdi-linux/Config.in"
 	source "package/dahdi-tools/Config.in"
@@ -498,7 +497,6 @@ endmenu
 	source "package/dtbocfg/Config.in"
 	source "package/dtv-scan-tables/Config.in"
 	source "package/dump1090/Config.in"
-	source "package/duo-pinmux/Config.in"
 	source "package/dvbsnoop/Config.in"
 	source "package/edid-decode/Config.in"
 	source "package/edk2-non-osi/Config.in"
@@ -2799,6 +2797,11 @@ comment "Utilities"
 	source "package/xxhash/Config.in"
 	source "package/ytree/Config.in"
 	source "package/zoxide/Config.in"
+endmenu
+
+menu "Sophgo packages"
+	source "package/cvi-pinmux/Config.in"
+	source "package/duo-pinmux/Config.in"
 endmenu
 
 menu "System tools"
