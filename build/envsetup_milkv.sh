@@ -394,9 +394,12 @@ function build_tdl_sdk()
   test "$?" -ne 0 && print_notice "${FUNCNAME[0]}() failed !!" && popd && return 1
   popd
 
-  cp -rfv "${TOP_DIR}"/tdl_sdk/install/lib/libcvi_tdl.so "${SYSTEM_OUT_DIR}"/lib/
-  #mkdir -p "${SYSTEM_OUT_DIR}"/usr/bin/"$1"
-  #cp -a "${SDK_INSTALL_PATH}"/bin/sample_* "${SYSTEM_OUT_DIR}"/usr/bin/"$1"
+  if [[ -d "${TDL_SDK_PATH}/install/bin" ]]; then
+    mkdir -p "${SYSTEM_OUT_DIR}"/usr/bin/ai
+    cp -a "${TDL_SDK_PATH}"/install/bin/sample_* "${SYSTEM_OUT_DIR}"/usr/bin/ai/
+  fi
+
+  cp -a "${TDL_SDK_PATH}"/install/lib/libcvi_tdl.so "${SYSTEM_OUT_DIR}"/lib/
 }
 
 function clean_tdl_sdk()
