@@ -1043,7 +1043,7 @@ function check_board()
     return 1
   fi
 
-  # MV_BOARD, MV_VENDOR, MV_BUILD_ENV, MV_BOARD_LINK
+  # MV_BOARD, MV_VENDOR, MV_BOARD_LINK
   MILKV_BOARD_CONFIG=${board_target}/boardconfig.sh
   if [ ! -f ${MILKV_BOARD_CONFIG} ]; then
     print_error "${MILKV_BOARD_CONFIG} not found!"
