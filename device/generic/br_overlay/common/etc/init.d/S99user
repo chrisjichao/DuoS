@@ -19,9 +19,9 @@ case "$1" in
                 . $SYSTEMPATH/duo-init.sh &
         fi
 
-        if [ -f $SYSTEMPATH/blink.sh ]; then
-                . $SYSTEMPATH/blink.sh &
-        fi
+        # if [ -f $SYSTEMPATH/blink.sh ]; then
+        #         . $SYSTEMPATH/blink.sh &
+        # fi
 
         if [ -f $SYSTEMPATH/usb.sh ]; then
                 . $SYSTEMPATH/usb.sh &

@@ -357,11 +357,11 @@ static int st7789v_probe(struct spi_device *spi)
 {
 	struct st7789v *ctx;
 	int ret;
-
+	printk("st7789v_probe enter\n");
 	ctx = devm_kzalloc(&spi->dev, sizeof(*ctx), GFP_KERNEL);
 	if (!ctx)
 		return -ENOMEM;
-
+	printk("st7789v_probe devm_kzalloc success\n");
 	spi_set_drvdata(spi, ctx);
 	ctx->spi = spi;
 
@@ -371,18 +371,19 @@ static int st7789v_probe(struct spi_device *spi)
 	ctx->power = devm_regulator_get(&spi->dev, "power");
 	if (IS_ERR(ctx->power))
 		return PTR_ERR(ctx->power);
-
+	printk("st7789v_probe devm_regulator_get success\n");
 	ctx->reset = devm_gpiod_get(&spi->dev, "reset", GPIOD_OUT_LOW);
 	if (IS_ERR(ctx->reset)) {
 		dev_err(&spi->dev, "Couldn't get our reset line\n");
 		return PTR_ERR(ctx->reset);
 	}
-
+	printk("st7789v_probe devm_gpiod_get success\n");
 	ret = drm_panel_of_backlight(&ctx->panel);
 	if (ret)
 		return ret;
-
+	printk("st7789v_probe drm_panel_of_backlight success\n");
 	drm_panel_add(&ctx->panel);
+	printk("st7789v_probe drm_panel_add success\n");
 
 	return 0;
 }
