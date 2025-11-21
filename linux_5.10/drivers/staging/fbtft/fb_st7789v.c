@@ -86,20 +86,21 @@ static int init_display(struct fbtft_par *par)
 	mdelay(50);
 	write_reg(par,0x36,0x00);
 	write_reg(par,0x3A,0x05);
-	write_reg(par,0xB2,0x0C,0x0C,0x00,0x33,0x33);
-	write_reg(par,0xB7,0x35);
-	write_reg(par,0xBB,0x19);
+	write_reg(par,0xB2,0x0B,0x0B,0x00,0x33,0x35);
+	write_reg(par,0xB7,0x11);
+	write_reg(par,0xBB,0x35);
 	write_reg(par,0xC0,0x2C);
 	write_reg(par,0xC2,0x01);
-	write_reg(par,0xC3,0x12);
+	write_reg(par,0xC3,0x0D);
 	write_reg(par,0xC4,0x20);
-	write_reg(par,0xC6,0x0F);
+	write_reg(par,0xC6,0x13);
 	write_reg(par,0xD0,0xA4,0xA1);
-	write_reg(par,0xE0,0xD0,0x04,0x0D,0x11,0x13,0x2B,0x3F,0x54,0x4C,0x18,0x0D,0x0B,0x1F,0x23);
-	write_reg(par,0xE1,0xD0,0x04,0x0C,0x11,0x13,0x2C,0x3F,0x44,0x51,0x2F,0x1F,0x1F,0x20,0x23);
+	write_reg(par,0xE0,0xF0,0x06,0x0B,0x0A,0x09,0x26,0x29,0x33,0x41,0x18,0x16,0x15,0x29,0x2D);
+	write_reg(par,0xE1,0xF0,0x04,0x08,0x08,0x07,0x03,0x28,0x32,0x40,0x3B,0x19,0x18,0x2A,0x2E);
+	write_reg(par,0xE4,0x25,0x00,0x00);
 	write_reg(par,0x21);
 	write_reg(par,0x11);
-	mdelay(50);
+	mdelay(120);
 	write_reg(par,0x29);
 	mdelay(200);
 	return 0;
@@ -115,26 +116,57 @@ static int init_display(struct fbtft_par *par)
 static int set_var(struct fbtft_par *par)
 {
 	u8 madctl_par = 0;
+    struct fb_info *info = par->info;
+    u16 xoffset = 0;
+    u16 yoffset = 0;
 
-	if (par->bgr)
-		madctl_par |= MADCTL_BGR;
-	switch (par->info->var.rotate) {
-	case 0:
-		break;
-	case 90:
-		madctl_par |= (MADCTL_MV | MADCTL_MY);
-		break;
-	case 180:
-		madctl_par |= (MADCTL_MX | MADCTL_MY);
-		break;
-	case 270:
-		madctl_par |= (MADCTL_MV | MADCTL_MX);
-		break;
-	default:
-		return -EINVAL;
-	}
-	write_reg(par, MIPI_DCS_SET_ADDRESS_MODE, madctl_par);
-	return 0;
+    /* MADCTL 设置 */
+    if (par->bgr)
+        madctl_par |= MADCTL_BGR;
+
+    switch (info->var.rotate) {
+    case 0:
+        /* 正常竖屏：RAM 320 →屏幕 280，需要上移 40 */
+        xoffset = 0;
+        yoffset = 20;
+        break;
+
+    case 90:
+        /* 横屏：高度280对应 X 方向，因此偏移移到 X 方向 */
+        madctl_par |= (MADCTL_MV | MADCTL_MY);
+        xoffset = 20;  /* X 方向补偿 */
+        yoffset = 0;
+        break;
+
+    case 180:
+        /* 倒过来：ST7789 从底部方向显示，所以不需要 offset */
+        madctl_par |= (MADCTL_MX | MADCTL_MY);
+        xoffset = 0;
+        yoffset = 0;
+        break;
+
+    case 270:
+        /* 横屏（相反方向）需要类似 90° 的处理 */
+        madctl_par |= (MADCTL_MV | MADCTL_MX);
+        xoffset = 0;
+        yoffset = 20;  /* 如果显示不全，可设 yoffset=40 测试 */
+        break;
+
+    default:
+        return -EINVAL;
+    }
+
+    write_reg(par, MIPI_DCS_SET_ADDRESS_MODE, madctl_par);
+
+    /* 写入 CASET / RASET */
+    write_reg(par, 0x2A,
+              0x00, xoffset,
+              0x00, xoffset + info->var.xres - 1);
+
+    write_reg(par, 0x2B,
+              0x00, yoffset,
+              0x00, yoffset + info->var.yres - 1);
+    return 0;
 }
 
 /**
@@ -213,14 +245,15 @@ static int blank(struct fbtft_par *par, bool on)
 static struct fbtft_display display = {
 	.regwidth = 8,
 	.width = 240,
-	.height = 320,
-	.gamma_num = 2,
-	.gamma_len = 14,
-	.gamma = HSD20_IPS_GAMMA,
+	.height = 280,
+	.buswidth = 8,
+	.gamma_num = 0,
+	.gamma_len = 0,
+	// .gamma = HSD20_IPS_GAMMA,
 	.fbtftops = {
 		.init_display = init_display,
 		.set_var = set_var,
-		.set_gamma = set_gamma,
+		// .set_gamma = set_gamma,
 		.blank = blank,
 	},
 };

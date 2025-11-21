@@ -246,6 +246,7 @@
 		clocks = <&clk CV181X_CLK_SPI>;
 		#address-cells = <1>;
 		#size-cells = <0>;
+
 #if 0
 		dmas = <&dmac 2 1 1
 			&dmac 3 1 1>;

@@ -299,7 +299,7 @@
 	#endif
 
 	#define SET_BOOTARGS "setenv bootargs ${reserved_mem} ${root} ${mtdparts} " \
-					"console=$consoledev,$baudrate $othbootargs;"
+					"console=tty0 console=$consoledev,$baudrate fbcon=map:0 fbcon=font:VGA5x5 $othbootargs;"
 
 	#define SD_BOOTM_COMMAND \
 				SET_BOOTARGS \

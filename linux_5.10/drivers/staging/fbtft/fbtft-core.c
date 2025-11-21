@@ -233,6 +233,19 @@ EXPORT_SYMBOL(fbtft_unregister_backlight);
 static void fbtft_set_addr_win(struct fbtft_par *par, int xs, int ys, int xe,
 			       int ye)
 {
+	struct fbtft_platform_data *pdata = par->pdata;
+    int x_offset = 0, y_offset = 0;
+
+    /* 从 platform_data 获取偏移（如果支持） */
+    if (pdata) {
+        x_offset = pdata->x_offset;
+        y_offset = pdata->y_offset;
+
+		xs += x_offset;
+		ys += y_offset;
+		xe += x_offset;
+		ye += y_offset;
+    }
 	write_reg(par, MIPI_DCS_SET_COLUMN_ADDRESS,
 		  (xs >> 8) & 0xFF, xs & 0xFF, (xe >> 8) & 0xFF, xe & 0xFF);
 
@@ -1201,6 +1214,8 @@ static struct fbtft_platform_data *fbtft_properties_read(struct device *dev)
 	pdata->rotate = fbtft_property_value(dev, "rotate");
 	pdata->bgr = device_property_read_bool(dev, "bgr");
 	pdata->fps = fbtft_property_value(dev, "fps");
+	pdata->x_offset = fbtft_property_value(dev, "x-offset");
+	pdata->y_offset = fbtft_property_value(dev, "y-offset");
 	pdata->txbuflen = fbtft_property_value(dev, "txbuflen");
 	pdata->startbyte = fbtft_property_value(dev, "startbyte");
 	device_property_read_string(dev, "gamma", (const char **)&pdata->gamma);

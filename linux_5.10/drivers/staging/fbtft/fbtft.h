@@ -137,6 +137,8 @@ struct fbtft_platform_data {
 	unsigned int rotate;
 	bool bgr;
 	unsigned int fps;
+	int x_offset;
+	int y_offset;
 	int txbuflen;
 	u8 startbyte;
 	char *gamma;
