@@ -18,23 +18,23 @@
 		};
 	};
 
-	// keys: keys {
-	// 	compatible = "gpio-keys";
+	keys: keys {
+		// compatible = "gpio-keys";
 
-	// 	button0 {
-	// 		label = "KEY_ENTER";
-	// 		gpios = <&porta 19 GPIO_ACTIVE_HIGH>;
-	// 		linux,code = <28>;
-	// 		debounce-interval = <10>;
-	// 	};
+		button0 {
+			label = "KEY_ENTER";
+			gpios = <&portb 11 GPIO_ACTIVE_HIGH>;
+			linux,code = <28>;
+			debounce-interval = <10>;
+		};
 
-	// 	button1 {
-	// 		label = "KEY_ESC";
-	// 		gpios = <&porta 20 GPIO_ACTIVE_LOW>;
-	// 		linux,code = <1>;
-	// 		debounce-interval = <10>;
-	// 	};
-	// };
+		button1 {
+			label = "KEY_ESC";
+			gpios = <&portb 12 GPIO_ACTIVE_HIGH>;
+			linux,code = <1>;
+			debounce-interval = <10>;
+		};
+	};
 
 	backlight: backlight {
 		compatible = "gpio-backlight";
@@ -64,13 +64,22 @@
 
 &i2c4 {
 	status = "okay";
-
-	gt9xx: gt9xx@14 {
-		compatible = "goodix,gt9xx";
-		reg = <0x14>;
-		goodix,irq-gpio = <&porta 18 0>;
-		goodix,rst-gpio = <&porta 19 GPIO_ACTIVE_HIGH>;
-		status = "okay";
+	
+	CST816S: CST816S@15 {
+		compatible = "hynitron,cst816s";
+		reg = <0x15>;
+		reset-gpios = <&portb 11 GPIO_ACTIVE_HIGH>;
+		interrupt-parent = <&portb>;
+		interrupts = <12 IRQ_TYPE_EDGE_RISING>;
+		linux,keycodes = < 0 >,           		/* ID 0: 无手势（通常忽略） */
+						<103>,       		/* ID 1: 上滑 */
+						<104>,     		/* ID 2: 下滑 */
+						<105>,     		/* ID 3: 左滑 */
+						<106>,    		/* ID 4: 右滑 */
+						<330>,    		/* ID 5: 单击 */
+						<0>, <0>, <0>, <0>, <0>,  /* ID 6~10: 保留/未使用 */
+						<352>,       		/* ID 11: 双击 */
+						<139>;     		/* ID 12: 长按 */
 	};
 };
 

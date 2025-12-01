@@ -192,6 +192,7 @@
 		portb: gpio-controller@1 {
 			interrupt-controller;
 			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+			#interrupt-cells = <2>;   // ← 必须有！
 		};
 	};
 

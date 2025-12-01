@@ -1335,4 +1335,16 @@ config TOUCHSCREEN_ZINITIX
 	  To compile this driver as a module, choose M here: the
 	  module will be called zinitix.
 
+config TOUCHSCREEN_CST816S
+	tristate "CST816S I2C Touchscreen support"
+	depends on I2C
+	help
+	  Say Y here if you have an hynitron CST816S touchscreen based
+	  on the Duo S family of controllers connected to your system.
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called CST816S.
+
 endif
